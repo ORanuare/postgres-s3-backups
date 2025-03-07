@@ -39,12 +39,12 @@ if (env.WEBHOOK_SECRET) {
   
   // Webhook endpoint
   app.post('/webhook/backup', async (req: Request, res: Response) => {
-    // Check for secret parameter
-    const { secret } = req.query;
+    // Check for Authorization header
+    const authHeader = req.headers.authorization;
     
-    if (!secret || secret !== env.WEBHOOK_SECRET) {
-      console.log('Webhook called with invalid secret');
-      res.status(403).json({ success: false, message: 'Invalid secret' });
+    if (!authHeader || authHeader !== `Bearer ${env.WEBHOOK_SECRET}`) {
+      console.log('Webhook called with invalid authorization');
+      res.status(403).json({ success: false, message: 'Invalid authorization' });
       return;
     }
     
