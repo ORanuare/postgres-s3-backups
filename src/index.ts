@@ -3,6 +3,7 @@ import { backup } from "./backup.js";
 import { env } from "./env.js";
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 
 console.log("NodeJS Version: " + process.version);
 
@@ -23,6 +24,11 @@ if (env.WEBHOOK_SECRET) {
   const port = process.env.PORT ? parseInt(process.env.PORT) : parseInt(env.WEBHOOK_PORT);
   
   // Middleware
+  app.use(cors({
+    origin: 'https://railway.com',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  })); // Enable CORS specifically for railway.com
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   
