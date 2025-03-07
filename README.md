@@ -1,6 +1,6 @@
 # Postgres S3 backups
 
-A simple NodeJS application to backup your PostgreSQL database to S3 via a cron.
+A simple NodeJS application to backup your PostgreSQL database to S3 via a cron or webhook.
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/I4zGrH)
 
@@ -18,6 +18,10 @@ A simple NodeJS application to backup your PostgreSQL database to S3 via a cron.
 
 - `BACKUP_CRON_SCHEDULE` - The cron schedule to run the backup on. Example: `0 5 * * *`
 
+- `WEBHOOK_SECRET` - Secret password to validate webhook requests. If set, a webhook server will be started.
+
+- `WEBHOOK_PORT` - Fallback port to run the webhook server on if the platform's `PORT` environment variable is not available. Default: `3000`
+
 - `AWS_S3_ENDPOINT` - The S3 custom endpoint you want to use. Applicable for 3-rd party S3 services such as Cloudflare R2 or Backblaze R2.
 
 - `AWS_S3_FORCE_PATH_STYLE` - Use path style for the endpoint instead of the default subdomain style, useful for MinIO. Default `false`
@@ -33,3 +37,23 @@ A simple NodeJS application to backup your PostgreSQL database to S3 via a cron.
 - `SUPPORT_OBJECT_LOCK` - Enables support for buckets with object lock by providing an MD5 hash with the backup file.
 
 - `BACKUP_OPTIONS` - Add any valid pg_dump option, supported pg_dump options can be found [here](https://www.postgresql.org/docs/current/app-pgdump.html). Example: `--exclude-table=pattern`
+
+## Webhook Usage
+
+When `WEBHOOK_SECRET` is set, a webhook server will be started on the specified port. The webhook endpoint is available at:
+
+```
+POST /webhook/backup?secret=YOUR_WEBHOOK_SECRET
+```
+
+This endpoint will trigger a backup when called with the correct secret. The secret is passed as a query parameter because some webhook providers do not allow custom headers.
+
+Responses:
+- 200 OK: Backup completed successfully
+- 403 Forbidden: Invalid secret
+- 500 Internal Server Error: Backup failed
+
+A simple health check endpoint is also available at:
+```
+GET /health
+```

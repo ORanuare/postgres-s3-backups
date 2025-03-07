@@ -13,6 +13,16 @@ export const env = envsafe({
     default: '0 5 * * *',
     allowEmpty: true
   }),
+  WEBHOOK_SECRET: str({
+    desc: 'Secret password to validate webhook requests',
+    default: '',
+    allowEmpty: true
+  }),
+  WEBHOOK_PORT: str({
+    desc: 'Fallback port to run the webhook server on if PORT environment variable is not available',
+    default: '3000',
+    allowEmpty: true
+  }),
   AWS_S3_ENDPOINT: str({
     desc: 'The S3 custom endpoint you want to use.',
     default: '',
