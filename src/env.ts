@@ -62,4 +62,9 @@ export const env = envsafe({
     default: '',
     allowEmpty: true,
   }),
+  S3_OBJECT_EXPIRES_DAYS: str({
+    desc: 'Number of days until the object expires in S3 (for lifecycle rules)',
+    default: '15',
+    allowEmpty: true,
+  }),
 })

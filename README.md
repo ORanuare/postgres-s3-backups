@@ -38,6 +38,8 @@ A simple NodeJS application to backup your PostgreSQL database to S3 via a cron 
 
 - `BACKUP_OPTIONS` - Add any valid pg_dump option, supported pg_dump options can be found [here](https://www.postgresql.org/docs/current/app-pgdump.html). Example: `--exclude-table=pattern`
 
+- `S3_OBJECT_EXPIRES_DAYS` - Number of days until the object expires in S3. Used to set the 'Expires' header on objects, which can be utilized for S3 lifecycle rules.
+
 ## Webhook Usage
 
 When `WEBHOOK_SECRET` is set, a webhook server will be started on the specified port. The webhook endpoint is available at:

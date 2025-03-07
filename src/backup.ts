@@ -45,6 +45,17 @@ const uploadToS3 = async ({ name, path }: { name: string, path: string }) => {
     params.ContentMD5 = Buffer.from(md5Hash, 'hex').toString('base64');
   }
 
+  // Add Expires header if S3_OBJECT_EXPIRES_DAYS is set
+  if (env.S3_OBJECT_EXPIRES_DAYS && env.S3_OBJECT_EXPIRES_DAYS !== '') {
+    const daysToExpire = parseInt(env.S3_OBJECT_EXPIRES_DAYS);
+    if (!isNaN(daysToExpire)) {
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + daysToExpire);
+      params.Expires = expiryDate;
+      console.log(`Setting object expiry date to ${expiryDate.toISOString()}`);
+    }
+  }
+
   const client = new S3Client(clientOptions);
 
   await new Upload({
